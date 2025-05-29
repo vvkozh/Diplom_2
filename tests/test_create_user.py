@@ -5,13 +5,10 @@ import data
 import generators
 from curls import Curls
 
-
 class TestCreateUser:
     @allure.title('Тест создания пользователя')
-    def test_create_user(self):
-        payload = {'email': generators.generate_email(),
-                   'password': generators.generate_password(),
-                   'name': generators.generate_name()}
+    def test_create_user(self, generate_data_and_delete_user):
+        payload = generate_data_and_delete_user
         with allure.step('Создание пользователя'):
             response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_REGISTRATION}', data = payload)
         assert response.status_code == 200
@@ -41,5 +38,5 @@ class TestCreateUser:
                        'password': generators.generate_password()}
         with allure.step(f'Создание пользователя {missing_field}'):
             response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_REGISTRATION}', data = payload)
-            assert response.status_code == 403
-            assert response.json() == data.ResponseData.RESPONSE_CREATE_USER_MISSING_FIELD
+        assert response.status_code == 403
+        assert response.json() == data.ResponseData.RESPONSE_CREATE_USER_MISSING_FIELD

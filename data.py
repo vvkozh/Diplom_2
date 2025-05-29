@@ -9,7 +9,7 @@ class UserDataForChange:
     USER_NAME = 'Vladimir'
 
 class Ingredients:
-    INVALID_HASH = '61c0c5a71d1f82001bdaaa6'
+    INVALID_HASH = ['61c0c5a71d1f82001bdaaa6', '16c0c5a71d1f82001bdaaa61']
 
 
 class ResponseData:

@@ -5,12 +5,16 @@ import pytest
 from curls import Curls
 
 @pytest.fixture()
-def create_user():
+def generate_data_and_delete_user():
     payload = {'email': generators.generate_email(),
                'password': generators.generate_password(),
                'name': generators.generate_name()}
-    response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_REGISTRATION}', data=payload)
-    yield response.json()
+    yield payload
+    payload_login = {'email': payload['email'],
+                     'password': payload['password']}
+    response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_LOGIN}', data=payload_login)
+    requests.delete(f'{Curls.MAIN_URL}{Curls.URL_DELETE_USER}', headers={'Authorization': response.json()['accessToken']})
+
 
 @pytest.fixture(scope='session')
 def login_user():

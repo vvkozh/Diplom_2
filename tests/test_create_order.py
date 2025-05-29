@@ -24,10 +24,11 @@ class TestCreateOrder:
         assert response.status_code == 401
         assert response.json()['success'] == False
 
+    @pytest.mark.parametrize('hash_ingredient', data.Ingredients.INVALID_HASH)
     @allure.title('Тест создания заказа с невалидным хэшом ингредиента')
-    def test_create_order_with_invalid_hash(self, login_user):
+    def test_create_order_with_invalid_hash(self, login_user, hash_ingredient):
         access_token = {'Authorization': login_user['accessToken']}
-        payload = {'ingredients': data.Ingredients.INVALID_HASH}
+        payload = {'ingredients': hash_ingredient}
         with allure.step('Создание заказа с невалидным хэшом ингредиента'):
             response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_CREATE_ORDER}', data = payload, headers=access_token)
         assert response.status_code == 500
