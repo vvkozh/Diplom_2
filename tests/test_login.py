@@ -3,9 +3,7 @@ import requests
 import pytest
 import data
 import generators
-
 from curls import Curls
-
 
 class TestLogin:
     @allure.title('Тест авторизации пользователя')
@@ -20,14 +18,11 @@ class TestLogin:
                                            'name': data.UserData.USER_NAME}
 
     @allure.title('Тест авторизации с неверными данными')
-    @pytest.mark.parametrize('invalid_data', ['email', 'password'])
-    def test_login_invalid_data(self, invalid_data):
-        if invalid_data == 'email':
-            payload = {'email': generators.generate_email(),
-                       'password': data.UserData.USER_PASSWORD}
-        else:
-            payload = {'email': generators.generate_email(),
-                       'password': data.UserData.USER_PASSWORD}
+    @pytest.mark.parametrize('email, password, invalid_data', [['correct_email', generators.generate_email(), 'password'],
+                                                               [generators.generate_password(), 'correct_password', 'email']])
+    def test_login_invalid_data(self, email, password, invalid_data):
+        payload = {'email': email if email != 'correct_email' else data.UserData.USER_EMAIL,
+                   'password': password if password != 'correct_password' else data.UserData.USER_PASSWORD}
         with allure.step(f'Авторизация с неверным {invalid_data}'):
             response = requests.post(f'{Curls.MAIN_URL}{Curls.URL_LOGIN}', data = payload)
         assert response.status_code == 401
